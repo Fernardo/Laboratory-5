@@ -1,0 +1,159 @@
+/*
+==========================================
+Name:studywork.c
+Author:Roman Liubkin
+Date:2020/10/30
+Version:
+Copiright:shareware
+Description: work
+==========================================
+*/
+
+#include <iostream>
+#include <Windows.h>
+using namespace std;
+
+class Person
+{
+private:
+	int id{ -1 };
+	string name{ "NONE" };
+	int age{ -1 };
+	float height{ -1 };
+public:
+	Person() : id(-1), name("NONE"), age(-1), height(-1)
+	{ }
+
+	// Геттеры
+	int getID() const { return id; }
+	string getName() const { return name; }
+	int getAge() const { return age; }
+	float getHeight() const { return height; }
+	void showInfo() const
+	{
+		cout << "ID: " << id << "\tИмя: " << name << "\tВозраст: " << age << "\tРост: " << height << endl;
+	}
+
+	// Сеттеры
+	void setID()
+	{
+		cout << "ID: ";
+		cin >> id;
+	}
+	void setName()
+	{
+		cout << "имя: ";
+		cin >> name;
+	}
+	void setAge()
+	{
+		cout << "возраст: ";
+		cin >> age;
+	}
+	void setHeight()
+	{
+		cout << "рост: ";
+		cin >> height;
+	}
+	void setInfo();
+};
+
+void Person::setInfo()
+{
+	setID();
+	setName();
+	setAge();
+	setHeight();
+}
+
+Person* findByID(Person*, const int N, const int id); 
+													  
+int main()
+{
+	SetConsoleOutputCP(1251);
+	SetConsoleCP(1251);
+
+	// Создание массива
+	int people_count{ 0 };
+	cout << "Введите количество людей: ";
+	cin >> people_count;
+	if (people_count < 1)
+	{
+		cerr << "Людей не может быть меньше 1\n";
+		system("pause");
+		return 1;
+	}
+	Person* people = new Person[people_count];
+	
+	for (int i = 0; i < people_count; i++)
+	{
+		cout << "\nВвод информации о " << i + 1 << " человеке:\n";
+		people[i].setInfo();
+	}
+
+	
+	int decision{ 0 };  
+					  
+	bool flg = true; 
+	int id{ -1 };
+	Person* prsn{ NULL };
+	do
+	{
+		cout << "\nВыберите действие:\n0 - завершить работу\n1 - посмотреть список \n2 - посмотреть полную информацию о человеке\n3 - изменить информацию о человеке\n"
+			<< "Введите номер выбранного действия: ";
+		cin >> decision;
+
+		switch (decision)
+		{
+		case 0:
+			flg = false;
+			break;
+		case 1:
+			cout << "ID\tИмя\n";
+			for (int i = 0; i < people_count; i++)
+				cout << people[i].getID() << '\t' << people[i].getName() << endl;
+			break;
+		case 2:
+			cout << "Введите id человека: ";
+			cin >> id;
+			prsn = findByID(people, people_count, id);
+			if (prsn != NULL) prsn->showInfo();
+			else cout << "Нет человека с таким ID\n";
+			prsn = NULL;
+			break;
+		case 3:
+			cout << "Введите id человека: ";
+			cin >> id;
+			prsn = findByID(people, people_count, id);
+			if (prsn != NULL)
+			{
+				cout << "Введите измененную информацию:\n";
+				prsn->setInfo();
+			}
+			else cout << "Нет человека с таким ID \n";
+			prsn = NULL;
+			break;
+		default:
+			cout << "Такого варианта нит\n";
+			break;
+		}
+	} while (flg);
+
+	delete[] people;
+	people = NULL;
+	system("pause");
+	return 0;
+}
+
+Person* findByID(Person* people, const int N, const int id)
+{
+	for (int i = 0; i < N; i++)
+	{
+		if (id == people[i].getID())
+		{
+			return &people[i];
+			break;
+		}
+	}
+	return 0;
+}
